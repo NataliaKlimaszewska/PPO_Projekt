@@ -19,26 +19,34 @@ public class FastFoodGuessingGame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new FlowLayout());
 
-        // Adding an image to the game
+        // Dodanie obrazu do gry
         JLabel imageLabel = new JLabel(new ImageIcon("path/to/mcdonald_dish.jpg"));
         add(imageLabel);
 
-        // Input field for user's guess
+        // Pole tekstowe do wpisania zgadnięcia
         userInput = new JTextField(10);
         add(userInput);
 
-        // Buttons for actions
-        submitButton = new JButton("Submit Guess");
-        endGameButton = new JButton("End Game");
-        promptButton = new JButton("Prompt");
-        feedbackLabel = new JLabel("");
+        // Przycisk "Submit Guess" - zamiana na RoundedButton
+        submitButton = new RoundedButton("Submit Guess");
+        submitButton.setBackground(Color.GREEN); // Kolor tła dla przycisku
 
+        // Przycisk "End Game" - zamiana na RoundedButton
+        endGameButton = new RoundedButton("End Game");
+        endGameButton.setBackground(Color.RED); // Inny kolor tła
+
+        // Przycisk "Prompt" - zamiana na RoundedButton
+        promptButton = new RoundedButton("Prompt");
+        promptButton.setBackground(Color.LIGHT_GRAY); // Inny kolor tła
+
+        // Etykieta feedback
+        feedbackLabel = new JLabel("");
         add(submitButton);
         add(endGameButton);
         add(promptButton);
         add(feedbackLabel);
 
-        // Adding action listeners to buttons
+        // Dodanie nasłuchiwaczy akcji do przycisków
         submitButton.addActionListener(e -> handleGuess());
         endGameButton.addActionListener(e -> endGame());
         promptButton.addActionListener(e -> showPrompt());
@@ -47,7 +55,7 @@ public class FastFoodGuessingGame extends JFrame {
     private void handleGuess() {
         try {
             int userGuess = Integer.parseInt(userInput.getText());
-            int actualCalories = 250; // Example value, should be fetched from database
+            int actualCalories = 250; // Przykładowa wartość, powinna być pobierana z bazy danych
             totalGuesses++;
 
             if (Math.abs(userGuess - actualCalories) <= 80) {
@@ -94,28 +102,24 @@ public class FastFoodGuessingGame extends JFrame {
         setVisible(true);
     }
 
-    // Optional: Panel for displaying image (if needed for more advanced
-    // customization)
-    public class ImagePanel extends JPanel {
-        private Image image;
-
-        public ImagePanel() {
-            super();
-            File imageFile = new File("path/to/mcdonald_dish.jpg");
-            try {
-                image = ImageIO.read(imageFile);
-            } catch (IOException e) {
-                System.err.println("Error. Can't open image file.");
-                e.printStackTrace();
-            }
-            Dimension size = new Dimension(image.getWidth(this), image.getHeight(this));
-            setPreferredSize(size);
+    // Niestandardowa klasa dla zaokrąglonych przycisków
+    class RoundedButton extends JButton {
+        public RoundedButton(String label) {
+            super(label);
+            setContentAreaFilled(false); // Wyłączenie domyślnego wypełnienia tła
         }
 
         @Override
         protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            // Rysowanie zaokrąglonego tła
+            g2.setColor(getBackground());
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+
+            // Rysowanie tekstu
             super.paintComponent(g);
-            g.drawImage(image, 0, 0, this);
         }
     }
 }
