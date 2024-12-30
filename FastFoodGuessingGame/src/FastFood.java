@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
-
+ 
 abstract class FastFood {
     protected String name;
     protected int calories;
@@ -10,7 +10,7 @@ abstract class FastFood {
     protected int carbs;
     protected int protein;
 
-    public FastFood(String name, int calories, int fat, int carbs, int protein) {
+protected FastFood (String name, int calories, int fat, int carbs, int protein) {
         this.name = name;
         this.calories = calories;
         this.fat = fat;
