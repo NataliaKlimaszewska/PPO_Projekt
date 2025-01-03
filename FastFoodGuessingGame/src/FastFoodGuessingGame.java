@@ -82,6 +82,15 @@ public class FastFoodGuessingGame extends JFrame {
         currentItem = DatabaseConnection.getRandomMenuItem();
         imageLabel.setIcon(new ImageIcon(currentItem.getImagePath()));
         userInput.setText("");
+        if (currentItem != null) {
+            String imagePath = "src/images/" + currentItem.getImagePath();
+            ImageIcon imageIcon = new ImageIcon(imagePath);
+            Image image = imageIcon.getImage().getScaledInstance(300, 200, Image.SCALE_SMOOTH);
+            imageIcon = new ImageIcon(image);
+            imageLabel.setIcon(imageIcon);
+        } else {
+            JOptionPane.showMessageDialog(this, "No data found! ");
+        }
     }
 
     private void endGame() {
