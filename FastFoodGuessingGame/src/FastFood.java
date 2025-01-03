@@ -1,7 +1,4 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.sql.*;
+
  
 abstract class FastFood {
     protected String name;

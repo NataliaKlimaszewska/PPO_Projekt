@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class FastFoodGuessingGame extends JFrame {
     private JTextField userInput;
@@ -12,6 +14,7 @@ public class FastFoodGuessingGame extends JFrame {
     private JButton submitButton, endGameButton, promptButton;
     private int correctGuesses = 0;
     private int totalGuesses = 0;
+    private FastFoodItem currentItem;
 
     public FastFoodGuessingGame() {
         setTitle("Fast Food Guessing Game");
@@ -19,11 +22,17 @@ public class FastFoodGuessingGame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new FlowLayout());
 
-        // Dodanie obrazu do gry
-        JLabel imageLabel = new JLabel(new ImageIcon("path/to/mcdonald_dish.jpg"));
+
+
+        currentItem = DatabaseConnection.getRandomMenuItem();
+        String imagePath = currentItem.getImagePath();
+        ImageIcon imageIcon = new ImageIcon(imagePath);
+        JLabel imageLabel = new JLabel(imageIcon);
         add(imageLabel);
 
-        // Pole tekstowe do wpisania zgadnięcia
+
+
+
         userInput = new JTextField(10);
         add(userInput);
 
@@ -55,17 +64,17 @@ public class FastFoodGuessingGame extends JFrame {
     private void handleGuess() {
         try {
             int userGuess = Integer.parseInt(userInput.getText());
-            int actualCalories = 250; // Przykładowa wartość, powinna być pobierana z bazy danych
+            int actualCalories = currentItem.getCalories();
             totalGuesses++;
 
             if (Math.abs(userGuess - actualCalories) <= 80) {
                 feedbackLabel.setForeground(Color.GREEN);
                 feedbackLabel.setText(
-                        "You guessed correctly! Fat: 10g, Carbs: 30g, Protein: 15g, Calories: " + actualCalories);
+                        "You guessed correctly! Fat: " + currentItem.fat + "g, Carbs: " + currentItem.carbs + "g, Protein: " + currentItem.protein + "g, Calories: " + actualCalories);
                 correctGuesses++;
             } else {
                 feedbackLabel.setForeground(Color.RED);
-                feedbackLabel.setText("Not Correct. Fat: 10g, Carbs: 30g, Calories: " + actualCalories);
+                feedbackLabel.setText("Not Correct. Fat: " + currentItem.fat + "g, Carbs: " + currentItem.carbs + "g, Calories: " + actualCalories);
             }
         } catch (NumberFormatException ex) {
             feedbackLabel.setForeground(Color.RED);
@@ -92,6 +101,15 @@ public class FastFoodGuessingGame extends JFrame {
     }
 
     public static void main(String[] args) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            if (conn != null) {
+                System.out.println("Połączenie z bazą danych powiodło się!");
+            } else {
+                System.out.println("Błąd połączenia z bazą danych.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         SwingUtilities.invokeLater(() -> {
             FastFoodGuessingGame game = new FastFoodGuessingGame();
             game.initializeFrame();
