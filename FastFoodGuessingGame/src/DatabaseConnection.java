@@ -15,9 +15,9 @@ public class DatabaseConnection {
             return DriverManager.getConnection(url, user, password);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+            throw new SQLException("Database driver not found.", e);
         }
 
-        return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
     public static FastFoodItem getRandomMenuItem() {

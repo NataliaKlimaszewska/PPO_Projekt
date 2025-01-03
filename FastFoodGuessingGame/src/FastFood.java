@@ -1,5 +1,4 @@
 
- 
 abstract class FastFood {
     protected String name;
     protected int calories;

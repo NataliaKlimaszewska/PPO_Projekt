@@ -15,6 +15,7 @@ public class FastFoodGuessingGame extends JFrame {
     private int correctGuesses = 0;
     private int totalGuesses = 0;
     private FastFoodItem currentItem;
+    private JLabel imageLabel;
 
     public FastFoodGuessingGame() {
         setTitle("Fast Food Guessing Game");
@@ -22,15 +23,9 @@ public class FastFoodGuessingGame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new FlowLayout());
 
-
-
         currentItem = DatabaseConnection.getRandomMenuItem();
-        String imagePath = currentItem.getImagePath();
-        ImageIcon imageIcon = new ImageIcon(imagePath);
-        JLabel imageLabel = new JLabel(imageIcon);
+        imageLabel = new JLabel(new ImageIcon(currentItem.getImagePath()));
         add(imageLabel);
-
-
 
 
         userInput = new JTextField(10);
@@ -72,6 +67,7 @@ public class FastFoodGuessingGame extends JFrame {
                 feedbackLabel.setText(
                         "You guessed correctly! Fat: " + currentItem.fat + "g, Carbs: " + currentItem.carbs + "g, Protein: " + currentItem.protein + "g, Calories: " + actualCalories);
                 correctGuesses++;
+                loadNextItem();
             } else {
                 feedbackLabel.setForeground(Color.RED);
                 feedbackLabel.setText("Not Correct. Fat: " + currentItem.fat + "g, Carbs: " + currentItem.carbs + "g, Calories: " + actualCalories);
@@ -80,6 +76,12 @@ public class FastFoodGuessingGame extends JFrame {
             feedbackLabel.setForeground(Color.RED);
             feedbackLabel.setText("Please enter a valid number.");
         }
+    }
+
+    private void loadNextItem() {
+        currentItem = DatabaseConnection.getRandomMenuItem();
+        imageLabel.setIcon(new ImageIcon(currentItem.getImagePath()));
+        userInput.setText("");
     }
 
     private void endGame() {
@@ -100,21 +102,7 @@ public class FastFoodGuessingGame extends JFrame {
         feedbackLabel.setText("Try guessing within 80 calories range!");
     }
 
-    public static void main(String[] args) {
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            if (conn != null) {
-                System.out.println("Połączenie z bazą danych powiodło się!");
-            } else {
-                System.out.println("Błąd połączenia z bazą danych.");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        SwingUtilities.invokeLater(() -> {
-            FastFoodGuessingGame game = new FastFoodGuessingGame();
-            game.initializeFrame();
-        });
-    }
+
 
     private void initializeFrame() {
         setVisible(true);
@@ -140,4 +128,23 @@ public class FastFoodGuessingGame extends JFrame {
             super.paintComponent(g);
         }
     }
+
+    public static void main(String[] args) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            if (conn != null) {
+                System.out.println("Połączenie z bazą danych powiodło się!");
+            } else {
+                System.out.println("Błąd połączenia z bazą danych.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        SwingUtilities.invokeLater(() -> {
+            FastFoodGuessingGame game = new FastFoodGuessingGame();
+            game.initializeFrame();
+        });
+    }
+
+
+
 }
