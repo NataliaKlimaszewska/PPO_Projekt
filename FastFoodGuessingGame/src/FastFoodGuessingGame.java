@@ -19,6 +19,8 @@ public class FastFoodGuessingGame extends JFrame {
     private JLabel imageLabel;
 
     public FastFoodGuessingGame() {
+
+
 //Icons 
 
         ImageIcon icon = new ImageIcon("gameIcon.png");
@@ -51,20 +53,28 @@ frame.setVisible(true);
         imageLabel = new JLabel(new ImageIcon(currentItem.getImagePath()));
         add(imageLabel);
 
+        // TextFields
 
-        userInput = new JTextField(10);
-        add(userInput);
+       JTextField userInput = new JTextField();
+       userInput.setPreferredSize(new Dimension(200, 30));
+        this.add(userInput);
 
         // Przycisk "Submit Guess" - zamiana na RoundedButton
         submitButton = new RoundedButton("Submit Guess");
+        submitButton.addActionListener(this);
+        this.add(submitButton);
         submitButton.setBackground(Color.GREEN); // Kolor tła dla przycisku
 
         // Przycisk "End Game" - zamiana na RoundedButton
         endGameButton = new RoundedButton("End Game");
+        endGameButton.addActionListener(this);
+        this.add(endGameButton);
         endGameButton.setBackground(Color.RED); // Inny kolor tła
 
         // Przycisk "Prompt" - zamiana na RoundedButton
         promptButton = new RoundedButton("Prompt");
+        promptButton.addActionListener(this);
+        this.add(promptButton);
         promptButton.setBackground(Color.LIGHT_GRAY); // Inny kolor tła
 
         // Etykieta feedback
