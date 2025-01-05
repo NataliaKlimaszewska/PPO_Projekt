@@ -8,74 +8,77 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class FastFoodGuessingGame extends JFrame {
+public class FastFoodGuessingGame extends JFrame implements ActionListener {
     private JTextField userInput;
-    private JLabel gameIcon;
-    private JLabel feedbackLabel;
+    private JLabel feedbackLabel,  imageLabel, imageIcon;
     private JButton submitButton, endGameButton, promptButton;
     private int correctGuesses = 0;
     private int totalGuesses = 0;
     private FastFoodItem currentItem;
-    private JLabel imageLabel;
 
     public FastFoodGuessingGame() {
 
+        //JFrames
+        JFrame frame = new JFrame();
+        setTitle("Fast Food Guessing Game");
+        frame.setSize(1024, 800);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new FlowLayout());
 
-//Icons 
+
+        JLabel gameIcon = null;
+        frame.add(gameIcon);
+        frame.setVisible(true);
+
+//Icons
 
         ImageIcon icon = new ImageIcon("gameIcon.png");
         ImageIcon correctAnswerIcon = new ImageIcon("correctAnswerIcon.jpg");
         ImageIcon wrongAnswerIcon = new ImageIcon("wrongAnswerIcon.png");
-//JLabels 
-        JLabel gameIcon = new JLabel();
-        lable.setText("Fast Food Guessing Game");
-        lable.setIcon(icon);
-        lable.setIcon(correctAnswerIcon);
-        lable.setIcon(wrongAnswerIcon);
-        this.add(lable);
-        
-
-//JFrames
-JFrame frame = new JFrame();
-frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-frame.setSize(1024, 800);
-frame.setLayout(new FlowLayout());
-frame.add(gameIcon);
-frame.setVisible(true); 
-
-
-        setTitle("Fast Food Guessing Game");
-        setSize(1024, 800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new FlowLayout());
-
-        currentItem = DatabaseConnection.getRandomMenuItem();
-        imageLabel = new JLabel(new ImageIcon(currentItem.getImagePath()));
-        add(imageLabel);
+//JLabels
+        gameIcon = new JLabel();
+        gameIcon.setText("Fast Food Guessing Game");
+        gameIcon.setIcon(icon);
+        JLabel correctAnswerLabel = new JLabel();
+        correctAnswerIcon.setImage(correctAnswerIcon.getImage());
+        JLabel wrongAnswerLabel = new JLabel();
+        wrongAnswerIcon.setImage(wrongAnswerIcon.getImage());
+        this.add(gameIcon);
 
         // TextFields
 
-       JTextField userInput = new JTextField();
-       userInput.setPreferredSize(new Dimension(200, 30));
+        JTextField userInput = new JTextField();
+        userInput.setPreferredSize(new Dimension(200, 30));
         this.add(userInput);
 
         // Przycisk "Submit Guess" - zamiana na RoundedButton
         submitButton = new RoundedButton("Submit Guess");
-        submitButton.addActionListener(this);
-        this.add(submitButton);
-        submitButton.setBackground(Color.GREEN); // Kolor tła dla przycisku
+        submitButton.setFocusable(false);
+        submitButton.setFont(new Font("SansSerif", Font.BOLD, 20));
+        submitButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        submitButton.addActionListener(e -> handleGuess());
+        submitButton.setBackground(Color.GREEN);
+        add(submitButton);
+
+        // Kolor tła dla przycisku
 
         // Przycisk "End Game" - zamiana na RoundedButton
         endGameButton = new RoundedButton("End Game");
-        endGameButton.addActionListener(this);
-        this.add(endGameButton);
-        endGameButton.setBackground(Color.RED); // Inny kolor tła
+        endGameButton.setFocusable(false);
+        endGameButton.setFont(new Font("SansSerif", Font.BOLD, 20));
+        endGameButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        endGameButton.addActionListener(e -> endGame());
+        endGameButton.setBackground(Color.RED);
+        add(endGameButton);
 
         // Przycisk "Prompt" - zamiana na RoundedButton
         promptButton = new RoundedButton("Prompt");
-        promptButton.addActionListener(this);
-        this.add(promptButton);
-        promptButton.setBackground(Color.LIGHT_GRAY); // Inny kolor tła
+        promptButton.setFocusable(false);
+        promptButton.setFont(new Font("SansSerif", Font.BOLD, 20));
+        promptButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        promptButton.addActionListener(e -> showPrompt());
+        promptButton.setBackground(Color.LIGHT_GRAY);
+        add(promptButton);
 
         // Etykieta feedback
         feedbackLabel = new JLabel("");
@@ -151,26 +154,18 @@ frame.setVisible(true);
         setVisible(true);
     }
 
-//Buttons
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
+    //Buttons
     class RoundedButton extends JButton implements ActionListener {
-submitButton.addActionListener(this);
-endGameButton.addActionListener(this);
-promptButton.addActionListener(this);
-
-submitButton.setFocusable(false);
-endGameButton.setFocusable(false);
-promptButton.setFocusable(false);
-
-submitButton.setFont(new Font("SansSerif", Font.BOLD, 20));
-endGameButton.setFont(new Font("SansSerif", Font.BOLD, 20));
-promptButton.setFont(new Font("SansSerif", Font.BOLD, 20));
-
-submitButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-endGameButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-promptButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-
-
+        public RoundedButton(String label){
+            super(label);
+            setContentAreaFilled(false);
+            setOpaque(false);
+        }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -183,21 +178,16 @@ promptButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             showPrompt();
         }
 
-        if(e.getSource() == submitButton && answer == true){
+        if(e.getSource() == submitButton ){
             feedbackLabel.setText("That's right! Keep going!");
-        lable.setVisible(true);
+        imageLabel.setVisible(true);
             handleGuess();
-    }else if (e.getSource() == submitButton && answer == false){
+    }else if (e.getSource() == submitButton){
         feedbackLabel.setText("Try again! You can do it!");
-        lable.setVisible(true);
+        imageLabel.setVisible(true);
         handleGuess();
     }
     }
-
-        public RoundedButton(String label) {
-            super(label);
-            setContentAreaFilled(false); // Wyłączenie domyślnego wypełnienia tła
-        }
 
         @Override
         protected void paintComponent(Graphics g) {
